@@ -1,18 +1,19 @@
 import { Card, CardContent } from "@/components/ui/card"
 
 interface DisplayServerActionErrorProps {
-  result: {
-    data?: undefined
+  errors: {
     serverError?: string | undefined // errors from server
     validationErrors?: Record<string, string[] | undefined> | undefined // input error
     bindArgsValidationErrors?: readonly [] | undefined
-  }
+  } | null
 }
 
 export function DisplayServerActionError({
-  result
+  errors
 }: DisplayServerActionErrorProps) {
-  const { serverError, validationErrors } = result
+  if (!errors) return null
+
+  const { serverError, validationErrors } = errors
 
   if (serverError) {
     return (

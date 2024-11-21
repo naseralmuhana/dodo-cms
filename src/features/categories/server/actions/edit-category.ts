@@ -24,13 +24,16 @@ export const editCategory = actionClient
       throw Error("category id is required")
     }
 
-    const isCategoryExists = await getCategoryById(id)
-    if (!isCategoryExists) {
+    const existingCategoryById = await getCategoryById(id)
+    if (!existingCategoryById) {
       throw new Error(`Category with id '${id}' does not exists.`)
     }
 
-    const existingCategory = await getCategoryBySlug(slug)
-    if (existingCategory) {
+    const existingCategoryBySlug = await getCategoryBySlug(slug)
+    if (
+      existingCategoryBySlug &&
+      existingCategoryById.id !== existingCategoryBySlug.id
+    ) {
       throw new Error(`Category with name '${name}' already exists.`)
     }
 

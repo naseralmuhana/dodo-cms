@@ -1,6 +1,6 @@
 "use client"
 
-import { ChangeEventHandler } from "react"
+import { ChangeEventHandler, useState } from "react"
 
 import { useRouter } from "next/navigation"
 
@@ -46,12 +46,14 @@ interface CategoryFormProps {
 
 export function CategoryForm({ defaultValues, isEditing }: CategoryFormProps) {
   const router = useRouter()
+  const [errors, setErrors] = useState({})
+
   const form = useForm<CategorySchema>({
     resolver: zodResolver(categorySchema),
     defaultValues
   })
 
-  const { execute, isExecuting, result } = useAction(
+  const { execute, isExecuting } = useAction(
     isEditing ? editCategory : addCategory,
     {
       onSuccess: ({ input }) => {
@@ -61,28 +63,26 @@ export function CategoryForm({ defaultValues, isEditing }: CategoryFormProps) {
         toast.success(message)
       },
       onError: ({ input, error }) => {
-        console.log(error)
         const message = isEditing
           ? TOAST_MESSAGES.UPDATE.error(input.name)
           : TOAST_MESSAGES.CREATE.error(input.name)
         toast.error(message)
+        setErrors(error)
       }
     }
   )
 
-  const { execute: executeDelete, result: deleteResult } = useAction(
-    deleteCategory,
-    {
-      onSuccess: () => {
-        toast.success(TOAST_MESSAGES.DELETE.success("This category"))
-        router.replace("/categories")
-        router.refresh()
-      },
-      onError: () => {
-        toast.error(TOAST_MESSAGES.DELETE.error("this category"))
-      }
+  const { execute: executeDelete } = useAction(deleteCategory, {
+    onSuccess: () => {
+      toast.success(TOAST_MESSAGES.DELETE.success("This category"))
+      router.replace("/categories")
+      router.refresh()
+    },
+    onError: ({ error }) => {
+      toast.error(TOAST_MESSAGES.DELETE.error("this category"))
+      setErrors(error)
     }
-  )
+  })
 
   function onSubmit(values: CategorySchema) {
     execute(values)
@@ -106,7 +106,7 @@ export function CategoryForm({ defaultValues, isEditing }: CategoryFormProps) {
         description={description}
         onDelete={onDelete}
       />
-      <DisplayServerActionError result={result || deleteResult} />
+      <DisplayServerActionError errors={errors} />
       <Form {...form}>
         <form
           className="space-y-8 max-w-3xl"

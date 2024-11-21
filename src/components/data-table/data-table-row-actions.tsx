@@ -52,8 +52,16 @@ export function DataTableRowActions<TData extends RowExtends>({
       toast.success(TOAST_MESSAGES.DELETE.success(name))
       router.refresh()
     },
-    onError: () => {
-      toast.error(TOAST_MESSAGES.DELETE.error(name))
+    onError: ({ error }) => {
+      toast.error(
+        `${TOAST_MESSAGES.DELETE.error(name)} ${
+          error.serverError
+            ? error.serverError
+            : error.validationErrors
+              ? `\`id\`: ${error.validationErrors.id}`
+              : ""
+        }`
+      )
     }
   })
 
