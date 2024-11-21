@@ -95,8 +95,8 @@ export function ResponsiveDialog({
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <DialogAction asChild>
-            <Button onClick={onConfirm}>Confirm</Button>
+          <DialogAction onClick={onConfirm} asChild>
+            <Button>Confirm</Button>
           </DialogAction>
         </DialogFooter>
       </DialogContent>

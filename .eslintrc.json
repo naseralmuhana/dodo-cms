@@ -13,7 +13,7 @@
           "src/db/**/*",
           "src/hooks/**/*",
           "src/providers/**/*",
-          "src/types/**/*",
+
           "src/constants/**/*"
         ]
       },
@@ -22,6 +22,11 @@
         "type": "feature",
         "capture": ["featureName"],
         "pattern": ["src/features/*/**/*"]
+      },
+      {
+        "mode": "full",
+        "type": "types",
+        "pattern": ["src/types/**/*"]
       },
       {
         "mode": "full",
@@ -47,18 +52,23 @@
         "rules": [
           {
             "from": ["shared"],
-            "allow": ["shared"]
+            "allow": ["shared", "types"]
+          },
+          {
+            "from": ["types"],
+            "allow": ["types", "feature"]
           },
           {
             "from": ["feature"],
             "allow": [
               "shared",
+              "types",
               ["feature", { "featureName": "${from.featureName}" }]
             ]
           },
           {
             "from": ["app", "neverImport"],
-            "allow": ["shared", "feature"]
+            "allow": ["shared", "feature", "types"]
           },
           {
             "from": ["app"],

@@ -1,6 +1,5 @@
 // Naming the GitHub URL constant
-export const GITHUB_REPO_URL =
-  "https://github.com/naseralmuhana/dodo-pizza-admin"
+export const GITHUB_REPO_URL = "https://github.com/naseralmuhana/dodo-pizza-cms"
 
 export const DIALOG_TEXTS = {
   DELETE_CONFIRMATION: {

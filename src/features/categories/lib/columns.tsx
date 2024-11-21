@@ -6,6 +6,8 @@ import { type SelectCategorySchema } from "@/db/schema/category/validation"
 
 import { DataTableRowActions } from "@/components/data-table/data-table-row-actions"
 
+import { deleteCategory } from "../server/actions/delete-category"
+
 export const columns: ColumnDef<SelectCategorySchema>[] = [
   {
     accessorKey: "id",
@@ -29,6 +31,8 @@ export const columns: ColumnDef<SelectCategorySchema>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />
+    cell: ({ row }) => (
+      <DataTableRowActions row={row} deleteAction={deleteCategory} />
+    )
   }
 ]

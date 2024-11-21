@@ -6,6 +6,9 @@ import { usePathname, useRouter } from "next/navigation"
 
 import { Row } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
+import { useAction } from "next-safe-action/hooks"
+
+import { DeleteActionType } from "@/types"
 
 import { ResponsiveDialog } from "@/components/responsive-dialog"
 import { Button } from "@/components/ui/button"
@@ -16,15 +19,22 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 
-interface DataTableRowActionsProps<TData extends { slug: string }> {
+interface DataTableRowActionsProps<TData extends { slug: string; id: number }> {
   row: Row<TData>
+  deleteAction: DeleteActionType
 }
 
-export function DataTableRowActions<TData extends { slug: string }>({
-  row
-}: DataTableRowActionsProps<TData>) {
+export function DataTableRowActions<
+  TData extends { slug: string; id: number }
+>({ row, deleteAction }: DataTableRowActionsProps<TData>) {
   const router = useRouter()
   const pathname = usePathname()
+
+  const { execute } = useAction(deleteAction, {
+    onSuccess: () => {
+      router.refresh()
+    }
+  })
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
@@ -53,7 +63,7 @@ export function DataTableRowActions<TData extends { slug: string }>({
         open={deleteDialogOpen}
         setOpen={setDeleteDialogOpen}
         onConfirm={() => {
-          console.log("Deleting")
+          execute({ id: row.original.id })
         }}
       />
     </>

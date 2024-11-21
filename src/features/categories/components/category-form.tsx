@@ -2,7 +2,10 @@
 
 import { ChangeEventHandler } from "react"
 
+import { useRouter } from "next/navigation"
+
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useAction } from "next-safe-action/hooks"
 import { useForm } from "react-hook-form"
 
 import {
@@ -26,6 +29,10 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
+import { addCategory } from "@/features/categories/server/actions/add-category"
+import { deleteCategory } from "@/features/categories/server/actions/delete-category"
+import { editCategory } from "@/features/categories/server/actions/edit-category"
+
 type handleChangeType = ChangeEventHandler<HTMLInputElement> | undefined
 
 interface CategoryFormProps {
@@ -34,13 +41,29 @@ interface CategoryFormProps {
 }
 
 export function CategoryForm({ defaultValues, isEditing }: CategoryFormProps) {
+  const router = useRouter()
   const form = useForm<CategorySchema>({
     resolver: zodResolver(categorySchema),
     defaultValues
   })
 
+  const { execute, isExecuting } = useAction(
+    isEditing ? editCategory : addCategory
+  )
+
+  const { execute: executeDelete } = useAction(deleteCategory, {
+    onSuccess: () => {
+      router.replace("/categories")
+      router.refresh()
+    }
+  })
+
   function onSubmit(values: CategorySchema) {
-    console.log(values)
+    execute(values)
+  }
+
+  const onDelete = () => {
+    executeDelete({ id: defaultValues.id })
   }
 
   const { title, description } = getFormTitleAndDescription({
@@ -55,7 +78,7 @@ export function CategoryForm({ defaultValues, isEditing }: CategoryFormProps) {
         isEditing={isEditing}
         title={title}
         description={description}
-        onDelete={() => console.log("Delete")}
+        onDelete={onDelete}
       />
       <Form {...form}>
         <form
@@ -83,6 +106,7 @@ export function CategoryForm({ defaultValues, isEditing }: CategoryFormProps) {
                     <Input
                       placeholder="name"
                       type="text"
+                      disabled={isExecuting}
                       {...field}
                       onChange={handleChange} // Use the custom handleChange
                     />
@@ -115,7 +139,10 @@ export function CategoryForm({ defaultValues, isEditing }: CategoryFormProps) {
               </FormItem>
             )}
           />
-          <SubmittingButton label={isEditing ? "Save Changes" : "Create"} />
+          <SubmittingButton
+            label={isEditing ? "Save Changes" : "Create"}
+            isLoading={isExecuting}
+          />
         </form>
       </Form>
     </>
