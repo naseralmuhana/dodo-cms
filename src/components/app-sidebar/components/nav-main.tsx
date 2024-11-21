@@ -5,11 +5,11 @@ import { ComponentPropsWithoutRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-import { IconType } from "@/types"
-
 import { capitalizeFirstLetter } from "@/lib/capitalize-first-letter"
 
-import { CreateIcon } from "@/components/shared/create-icon"
+import { IconType } from "@/types"
+
+import { CreateIcon } from "@/components/create-icon"
 import {
   SidebarGroup,
   SidebarGroupContent,

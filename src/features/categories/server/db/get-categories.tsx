@@ -1,5 +1,4 @@
 import { db } from "@/db"
-
 import { type SelectCategorySchema } from "@/db/schema/category/validation"
 
 /**

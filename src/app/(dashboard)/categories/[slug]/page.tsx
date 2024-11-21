@@ -11,9 +11,11 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const slug = (await params).slug
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <CategoryPageContainer slug={slug} />
-    </Suspense>
+    <>
+      <Suspense fallback={<div>Loading...</div>}>
+        <CategoryPageContainer slug={slug} />
+      </Suspense>
+    </>
   )
 }
 
@@ -21,7 +23,14 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 export async function generateStaticParams() {
   const categories = await getCategories()
 
-  return categories.map((category) => ({
+  // Add `/new` as an additional static path
+  const staticPaths = [{ slug: "new" }]
+
+  // Dynamically add slugs from categories
+  const dynamicPaths = categories.map((category) => ({
     slug: category.slug
   }))
+
+  // Combine static and dynamic paths
+  return [...staticPaths, ...dynamicPaths]
 }

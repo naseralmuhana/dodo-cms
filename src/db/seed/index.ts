@@ -1,6 +1,6 @@
-import { db, DB } from "@/db"
 import { sql, Table } from "drizzle-orm"
 
+import { db, DB } from "@/db"
 import * as schema from "@/db/schema"
 import * as data from "@/db/schema/data"
 

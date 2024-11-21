@@ -1,6 +1,7 @@
-import { DB } from "@/db"
 import { InferInsertModel } from "drizzle-orm"
 import { PgTable } from "drizzle-orm/pg-core"
+
+import { DB } from "@/db"
 
 /**
  * Type definition for the `seedTable` function, ensuring that the data being inserted

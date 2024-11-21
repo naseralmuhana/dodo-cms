@@ -1,7 +1,8 @@
 import { createElement } from "react"
 
-import { IconType } from "@/types"
 import * as Icons from "lucide-react"
+
+import { IconType } from "@/types"
 
 interface CreateIconProps {
   icon: IconType
