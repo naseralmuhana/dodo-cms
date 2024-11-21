@@ -6,7 +6,7 @@ import { type SelectCategorySchema } from "@/db/schema/category/validation"
 
 import { DataTableRowActions } from "@/components/data-table/data-table-row-actions"
 
-import { deleteCategory } from "../server/actions/delete-category"
+import { deleteCategory } from "@/features/categories/server/actions/delete-category"
 
 export const columns: ColumnDef<SelectCategorySchema>[] = [
   {

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAction } from "next-safe-action/hooks"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 import {
   categorySchema,
@@ -16,6 +17,9 @@ import {
 import { getFormTitleAndDescription } from "@/lib/get-form-title-description"
 import { slugify } from "@/lib/slugify"
 
+import { TOAST_MESSAGES } from "@/constants/toast-messages"
+
+import { DisplayServerActionError } from "@/components/display-server-action-errors"
 import { FormHeader } from "@/components/form-header"
 import { SubmittingButton } from "@/components/submitting-button"
 import {
@@ -47,19 +51,45 @@ export function CategoryForm({ defaultValues, isEditing }: CategoryFormProps) {
     defaultValues
   })
 
-  const { execute, isExecuting } = useAction(
-    isEditing ? editCategory : addCategory
+  const { execute, isExecuting, result } = useAction(
+    isEditing ? editCategory : addCategory,
+    {
+      onSuccess: ({ input }) => {
+        const message = isEditing
+          ? TOAST_MESSAGES.UPDATE.success(input.name)
+          : TOAST_MESSAGES.CREATE.success(input.name)
+        toast.success(message)
+      },
+      onError: ({ input, error }) => {
+        console.log(error)
+        const message = isEditing
+          ? TOAST_MESSAGES.UPDATE.error(input.name)
+          : TOAST_MESSAGES.CREATE.error(input.name)
+        toast.error(message)
+      }
+    }
   )
 
-  const { execute: executeDelete } = useAction(deleteCategory, {
-    onSuccess: () => {
-      router.replace("/categories")
-      router.refresh()
+  const { execute: executeDelete, result: deleteResult } = useAction(
+    deleteCategory,
+    {
+      onSuccess: () => {
+        toast.success(TOAST_MESSAGES.DELETE.success("This category"))
+        router.replace("/categories")
+        router.refresh()
+      },
+      onError: () => {
+        toast.error(TOAST_MESSAGES.DELETE.error("this category"))
+      }
     }
-  })
+  )
 
   function onSubmit(values: CategorySchema) {
-    execute(values)
+    execute({
+      name: values.name,
+      slug: values.slug,
+      id: defaultValues.id
+    })
   }
 
   const onDelete = () => {
@@ -80,6 +110,7 @@ export function CategoryForm({ defaultValues, isEditing }: CategoryFormProps) {
         description={description}
         onDelete={onDelete}
       />
+      <DisplayServerActionError result={result || deleteResult} />
       <Form {...form}>
         <form
           className="space-y-8 max-w-3xl"
