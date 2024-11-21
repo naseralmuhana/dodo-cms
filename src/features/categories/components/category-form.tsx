@@ -85,11 +85,7 @@ export function CategoryForm({ defaultValues, isEditing }: CategoryFormProps) {
   )
 
   function onSubmit(values: CategorySchema) {
-    execute({
-      name: values.name,
-      slug: values.slug,
-      id: defaultValues.id
-    })
+    execute(values)
   }
 
   const onDelete = () => {
